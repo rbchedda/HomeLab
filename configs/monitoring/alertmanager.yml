@@ -1,0 +1,13 @@
+# NOT DEPLOYED. Draft. Alerts go to Discord.
+# The webhook URL is read from a gitignored file; never put it in this file.
+route:
+  receiver: discord
+  group_by: [alertname, instance]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+receivers:
+  - name: discord
+    discord_configs:
+      - webhook_url_file: /etc/alertmanager/discord_webhook
+        send_resolved: true

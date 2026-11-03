@@ -1,0 +1,17 @@
+groups:
+  - name: homelab
+    rules:
+      - alert: ThinPoolWarning
+        expr: lvm_thin_data_percent > 80 or lvm_thin_meta_percent > 80
+        for: 10m
+        labels: {severity: warning}
+        annotations: {summary: "Thin pool {{ $labels.vg }}/{{ $labels.lv }} on {{ $labels.instance }} > 80%"}
+      - alert: ThinPoolCritical
+        expr: lvm_thin_data_percent > 90 or lvm_thin_meta_percent > 90
+        for: 5m
+        labels: {severity: critical}
+        annotations: {summary: "Thin pool {{ $labels.vg }}/{{ $labels.lv }} > 90%, free space now"}
+      - alert: NodeDown
+        expr: up{job="node"} == 0
+        for: 5m
+        labels: {severity: critical}

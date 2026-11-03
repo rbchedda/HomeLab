@@ -1,0 +1,12 @@
+.env
+*.env
+!.env.example
+*.key
+*.pem
+id_rsa*
+id_ed25519*
+secrets/
+*.kdbx
+tailscale*.state
+discord_webhook
+**/discord_webhook
