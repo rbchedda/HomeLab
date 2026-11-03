@@ -1,6 +1,8 @@
-# Monitoring plan (not deployed)
+# Monitoring
 
-Stack: Prometheus + Grafana + node-exporter + prometheus-pve-exporter, with Alertmanager for alerts. Uptime Kuma handles simple up/down checks. Compose file: [`configs/monitoring/docker-compose.yml`](../configs/monitoring/docker-compose.yml).
+The current stack runs in **LXC 112 `monitor`** on node 1 (`homelab`, `<LAN>.10`): Prometheus, Grafana, Alertmanager (Discord alerts), Uptime Kuma, and pve-exporter. Every Proxmox node also runs `node_exporter`. Node 4 (`sc4`, `<LAN>.9`) still has **LXC 107 `monitoring`**, which runs Jellystat and a legacy Uptime Kuma.
+
+Sanitized compose file: [`configs/monitoring/docker-compose.yml`](../configs/monitoring/docker-compose.yml). Secrets stay in `.env` (see `.env.example`).
 
 ## Targets
 - node-exporter on each Proxmox node (port 9100).

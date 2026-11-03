@@ -1,6 +1,6 @@
 # Recovering a Proxmox node from a full thin pool
 
-One of my nodes, node4, still answered ping but refused SSH and the web UI, and it dropped out of the cluster. That combination usually means the kernel is up but userspace never finished booting.
+One of my nodes, node 3 (`sc3`, `<LAN>.12`, the Jellyfin host), still answered ping but refused SSH and the web UI, and it dropped out of the cluster. That combination usually means the kernel is up but userspace never finished booting. Earlier notes called this machine node4; the 2026-11-03 inventory is node 3.
 
 At the console it was in **emergency mode**. The media volume `/srv/media` had timed out at boot. Since the fstab entry had no `nofail`, systemd stopped before networking and SSH came up.
 
