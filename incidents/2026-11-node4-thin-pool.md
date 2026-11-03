@@ -1,14 +1,16 @@
-# Postmortem: node4 unreachable — LVM thin pool overcommitted
+# Postmortem: node 3 unreachable — LVM thin pool overcommitted
 
 **Dates:** ~2026-10-22 to 2026-11-02 · **Severity:** one node down, media service unavailable · **Status:** resolved
 
+**Host:** Proxmox node 3, `sc3` (`<LAN>.12`), LXC 102 Jellyfin. This file is still named `node4` because that was the placeholder used before the 2026-11-03 inventory. Node 4 is `sc4` at `<LAN>.9`.
+
 ## Summary
-Node node4 (<LAN>.12) answered ping but refused SSH and the Proxmox UI (8006) and dropped out of the cluster. At the console it was in systemd emergency mode: the media volume `vm-102-disk-1` (`/srv/media`, 136G) timed out at boot. The `pve/data` thin pool (137G) was 95.77% full while overcommitted (30G + 136G provisioned = 166G).
+Node 3 `sc3` (<LAN>.12) answered ping but refused SSH and the Proxmox UI (8006) and dropped out of the cluster. At the console it was in systemd emergency mode: the media volume `vm-102-disk-1` (`/srv/media`, 136G) timed out at boot. The `pve/data` thin pool (137G) was 95.77% full while overcommitted (30G + 136G provisioned = 166G).
 
 ## Timeline
 | Date | Event |
 |---|---|
-| ~Oct 22 | node4 stops responding to SSH/8006; still pings; leaves cluster quorum |
+| ~Oct 22 | node 3 stops responding to SSH/8006; still pings; leaves cluster quorum |
 | Oct 23 | Remote checks confirm SSH and web UI refused |
 | Nov 2 | Console: emergency mode, `/srv/media` mount timeout |
 | Nov 2 | `/srv/media` commented out of fstab → node boots, SSH restored |
@@ -32,7 +34,7 @@ The thin pool was provisioned beyond physical capacity. As media grew, the pool 
 - ❌ A non-critical data mount could block boot.
 
 ## Prevention
-- [ ] **Monitor thin pools:** alert at 80% / 90% on `data_percent` and `metadata_percent` via Prometheus + Alertmanager → Discord (drafted in `configs/monitoring/`, not deployed).
+- [x] **Monitor thin pools:** Prometheus, Alertmanager (Discord), and Grafana now run in LXC 112 on node 1 (`homelab`). Rules warn at 80% and go critical at 90% (`configs/monitoring/`).
 - [ ] **No overcommit:** total provisioned ≤ pool size, or set `thin_pool_autoextend_threshold` with free VG space.
 - [ ] **`nofail,x-systemd.device-timeout=10s`** on all non-root data mounts.
 - [ ] Media moved to a planned DIY NAS (barebones PC + bulk HDDs), off hypervisor local storage.

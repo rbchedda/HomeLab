@@ -1,4 +1,4 @@
-# NOT DEPLOYED. Draft. Secrets come from .env (see .env.example).
+# Sanitized definition of the stack in LXC 112 (node 1, homelab). Secrets come from .env (see .env.example).
 services:
   prometheus:
     image: prom/prometheus:latest
